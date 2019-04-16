@@ -1,5 +1,6 @@
 # Sem-II-Final-Project---Image-Processing
 """
+
 Francisco Lopez 
 
 4/16/19
@@ -13,9 +14,11 @@ Description: I will modify a binary image with different effects, like outline, 
 On my honor, I have neither given nor recieved any unacknowledged aid on this assignment.
 
 Francisco Lopez
+
 """
 
 import os 
+
 """
 
 Description:Calls all methods to help create the new image effects.
@@ -27,6 +30,7 @@ Return: Nothing
 Plan: Calls all methods.
 
 """
+
 def main():
 
     bin_file = bin_file_setup()
@@ -34,6 +38,7 @@ def main():
     outline(bin_file)
     
 """
+
 Description: Gets the users file and checks if it is a file in the folder. 
 
 Parameter: None
@@ -44,7 +49,8 @@ Return:
 Plan: Asks the user for a file and uses os.path.exists to check if the file is
 in the folder with the code.
 
-"""   
+"""  
+
 def bin_file_setup():
 
     #file_name = raw_input("What binary file do you want to run? ")
@@ -62,6 +68,7 @@ def bin_file_setup():
     return bin_file
 
 """
+
 Description: Gets integer of an offset for the binary file and uses it to see
 the characteristics of the file.
 
@@ -79,9 +86,11 @@ make it the byte variable. Then I will get the value of the byte using ord and
 multiplying it by 256 since that's the max it can be and it can go up depending
 on how many bytes are read. Adding them to integer which gives me the offset's
 value. 
+
 """
 
 def get_integer(bin_file,offset):
+
     #Sets the file marker
     bin_file.seek(offset)
     
@@ -98,6 +107,7 @@ def get_integer(bin_file,offset):
     return integer
 
 """
+
 Description: Gets the header of the binary file to copy it to the output.
 
 Parameter:
@@ -108,6 +118,7 @@ Return: Nothing
 
 Plan: Gets the offset of the header and reads every pixel until that number.
 Then the pixels are written into the output file. 
+
 """
 
 def copy_header(bin_file,output):
@@ -123,6 +134,7 @@ def copy_header(bin_file,output):
         output.write(ch)
 
 """
+
 Description: Sets up output file for the methods that need one.
 
 Parameter:
@@ -135,8 +147,11 @@ header is copied to that output file.
 """
 
 def set_up_output(bin_file):
+
     #Asks for the output name and opens it
+    
     #output_name = raw_input("What is the output file? ")
+    
     output_name = "outline.bmp"
     
     output = open(output_name, "w+b")
@@ -146,6 +161,7 @@ def set_up_output(bin_file):
     return output
 
 """
+
 Description: Sets the outline of a certain figures by turning the dark colors to
 black and the opposite for lighter colors.
 
@@ -158,13 +174,19 @@ Plan:
     Have an if statement checking to see if the rgb levels in a byte are under
 a certain number to either turn them into black or white colors. Creating the
 figures into outlines of themselves. 
+
 """
 
 def outline(bin_file):
+
     #Variables to help flip image and set file_marker
+    
     w = get_integer(bin_file,18)
+    
     h = get_integer(bin_file,22)
+    
     offset = get_integer(bin_file,10)
+    
     bin_file.seek(offset)
     
     with set_up_output(bin_file) as outline:
