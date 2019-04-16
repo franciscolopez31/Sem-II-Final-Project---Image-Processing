@@ -8,11 +8,18 @@ Description: I will modify a binary image with different effects, like outline, 
 On my honor, I have neither given nor recieved any unacknowledged aid on this assignment.
 Francisco Lopez
 """
+
 import os 
+"""
+Description:Calls all methods to help create the new imafge effects.
+Parameter: None
+Return: Nothing
+Plan: 
+"""
 def main():
     bin_file = bin_file_setup()
     outline(bin_file)
-    #fisheye_effect(bin_file)
+    
 """
 Description: Gets the users file and checks if it is a file in the folder. 
 Parameter: None
@@ -29,7 +36,6 @@ def bin_file_setup():
         print "This file does not exist. Input another one"
         file_name = raw_input("What binary file do you want to run? ")
     bin_file = open(file_name, "r+b")
-    
     return bin_file
 
 """
