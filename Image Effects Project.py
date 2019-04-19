@@ -115,6 +115,19 @@ def outline(bin_file):
                 outline.write(chr(255) + chr(255) + chr(255))
     print "done"
     
+def mirror(bin_file):
+    w, h, offset = set_up_size(bin_file)
+    row = []
+    new_w = w/2 - 1
+    with set_up_output(bin_file) as mirror:
+        for i in range(h):
+            for i in range(w/2):
+                ch = bin_file.read(3)
+                row.append(ch)
+                mirror.write(ch)
+            for i in range(w/2):
+                mirror.write(row[new_w - i])
+        print "done"
 """
 Description:
 Parameter:
