@@ -2,10 +2,11 @@
 Francisco Lopez 
 4/22/19
 Sem II Final Project 
-I will modify different bmp images and I give them certain image effects. They
+I will modify different bmp images and give them certain image effects. They
 will either get a regular or reverse outline effect, a vertical or horizontal
 mirror effect or a static effect. 
-On my honor, I have neither given nor received any unacknowledged aid on this assignment.
+On my honor, I have neither given nor received any unacknowledged aid on this
+assignment.
 Francisco Lopez
 """
 import os
@@ -19,7 +20,7 @@ Plan: Variable will ask user for the certain effect they want to see.
 """
 def main():
     bin_file = bin_file_setup()
-    print "The effects you can choose are outline, mirror, static or blur."
+    print "The effects you can choose are outline, mirror or static."
     effect = raw_input("Which effect would you like to do? ")
     if effect == "outline":
         outline(bin_file)
