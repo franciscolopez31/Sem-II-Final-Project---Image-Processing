@@ -1,17 +1,35 @@
 """
 Francisco Lopez 
-4/16/19
-Sem II Final
-Any help recieved: 
-Description: 
-On my honor, I have neither given nor recieved any unacknowledged aid on this assignment.
+4/22/19
+Sem II Final Project 
+I will modify different bmp images and I give them certain image effects. They
+will either get a regular or reverse outline effect, a vertical or horizontal
+mirror effect or a static effect. 
+On my honor, I have neither given nor received any unacknowledged aid on this assignment.
 Francisco Lopez
 """
-import os 
+import os
+import random
+
+"""
+Description: Calls the methods that are typed by the user.
+Parameter: None
+Return: Nothing
+Plan: Variable will ask user for the certain effect they want to see. 
+"""
 def main():
     bin_file = bin_file_setup()
-    #outline(bin_file)
-    fisheye_effect(bin_file)
+    print "The effects you can choose are outline, mirror, static or blur."
+    effect = raw_input("Which effect would you like to do? ")
+    if effect == "outline":
+        outline(bin_file)
+    elif effect == "mirror":
+        mirror(bin_file)
+    elif effect == "static":
+        static(bin_file)
+    else:
+        effect = raw_input("Which effect would you like? ")
+
 """
 Description: Gets the users file and checks if it is a file in the folder. 
 Parameter: None
@@ -21,8 +39,15 @@ Plan: Asks the user for a file and uses os.path.exists to check if the file is
 in the folder with the code.
 """   
 def bin_file_setup():
-    #file_name = raw_input("What binary file do you want to run? ")
-    file_name = "lion.bmp"
+    #Picks the appropriate file for the certain image the user wants
+    image = raw_input("Do you want to use a lion, flower or class pic? ")
+    if image == "flower":
+        file_name = "testforoutline.bmp"
+    if image == "lion":
+        file_name = "lion.bmp"
+    if image == "class pic":
+        file_name = "class_pic.bmp"
+    
     #Checks if the file is in the folder
     while os.path.exists(file_name) == False:
         print "This file does not exist. Input another one"
@@ -90,6 +115,22 @@ def set_up_output(bin_file):
     return output
 
 """
+Description: Sets up the variables used in the effects methods.
+Parameter:
+    bin_file - the binary file containing the image
+Return: Nothing
+Plan: Uses get_integer to get each appropriate variable for the following
+methods.
+"""
+def set_up_size(bin_file):
+    #Variables to help flip image and set file_marker
+    w = get_integer(bin_file,18)
+    h = get_integer(bin_file,22)
+    offset = get_integer(bin_file,10)
+    bin_file.seek(offset)
+    return w, h, offset
+
+"""
 Description: Sets the outline of a certain figures by turning the dark colors to
 black and the opposite for lighter colors.
 Parameter:
@@ -101,82 +142,108 @@ a certain number to either turn them into black or white colors. Creating the
 figures into outlines of themselves. 
 """
 def outline(bin_file):
-    #Variables to help flip image and set file_marker
-    w = get_integer(bin_file,18)
-    h = get_integer(bin_file,22)
-    offset = get_integer(bin_file,10)
-    bin_file.seek(offset)
+    w, h, offset = set_up_size(bin_file)
+    outline_type = raw_input("Do you want a reverse or regular outline? ")
     with set_up_output(bin_file) as outline:
         for i in range(w*h):
             ch = bin_file.read(3)
-            if ord(ch[0]) < 140 and ord(ch[1]) < 130 and ord(ch[2]) < 140:
-                outline.write(chr(0) + chr(0) + chr(0))
-            else:
-                outline.write(chr(255) + chr(255) + chr(255))
-    print "done"
-    
+            if outline_type == "regular":
+                #Looks at the rgb levels to see whether they should become a
+                #black or a white color
+                if ord(ch[0]) < 140 and ord(ch[1]) < 130 and ord(ch[2]) < 120:
+                    outline.write(chr(0) + chr(0) + chr(0))
+                else:
+                    outline.write(chr(255) + chr(255) + chr(255))
+                    
+            if outline_type == "reverse":
+                #Looks at the rgb levels but changes the rgb levels to the
+                #opposite of the regular outline
+                if ord(ch[0]) < 140 and ord(ch[1]) < 130 and ord(ch[2]) < 120:
+                    outline.write(chr(255) + chr(255) + chr(255))
+                else:
+                    outline.write(chr(0) + chr(0) + chr(0))
+    print "Finished"
+
+"""
+Description: Mirrors an image vertically. 
+Parameter:
+    bin_file - binary file containing the original image
+Return: Nothing
+Plan: Has a loop that reads each pixel from the first half of each row and the
+pixel is written down normally on the outline file. Then another for loop will
+take the row of pixels from the first half of the line, and write them in
+reverse. Creating the mirror effect for one line and th eloop will continue to
+go until it reaches the last line. 
+"""
 def mirror(bin_file):
+    #Set varialbes for 
     w, h, offset = set_up_size(bin_file)
     row = []
-    new_w = w/2 - 1
-    with set_up_output(bin_file) as mirror:
-        for i in range(h):
-            for i in range(w/2):
-                ch = bin_file.read(3)
-                row.append(ch)
-                mirror.write(ch)
-            for i in range(w/2):
-                mirror.write(row[new_w - i])
-        print "done"
-"""
-Description:
-Parameter:
-Return:
-Plan:
-"""
-def fisheye_effect(bin_file):
-    #Variables to help flip image and set file_marker
-    w = get_integer(bin_file,18)
-    h = get_integer(bin_file,22)
-    offset = get_integer(bin_file,10)
-    new_offset = offset 
-    bin_file.seek(offset)
-    lens = (h/2) - (h/10)
-    black_rows = h/10
+    choice = raw_input("Would you want a horiontal or vertical mirror effect? ")
     
-    #w = 276 pixels, 92 bytes; h = 183 pixels, 61 bytes
-    with set_up_output(bin_file) as fisheye:
-        for i in range(w*black_rows):
-            fisheye.write(chr(0))
-        
-        for i in range(w*lens/2):
-            i1 = i
-            for i in range(w/2 - (1+i1)):
-                byte = bin_file.read(3)
-                new_offset += 1
-                fisheye.write(chr(0))
-            for i in range(i1+1):
-                byte = bin_file.read(3)
-                for i in range(i1):
-                    fisheye.write(byte)
-                    bin_file.seek(new_offset + i1)
-            
-        print "done"
-        
-        """
-            for i in range(w*lens/2):
-                for i in range(h/2 - (1+i)):
-                    byte = bin_file.read(3)
-                    new_offset += 1
-                    fisheye.write(chr(0))
-                if i != 0:
-                    for j in range(i+1):
-                        bin_file.seek(offset)
-                        byte = bin_file.read(3)
-                        for i in range(j):
-                            fisheye.write(byte)
-                            bin_file.seek(offset + j)
-            """   
+    with set_up_output(bin_file) as mirror:
+        if choice == "vertical":
+            for i in range(h):
+                #Reads the first half of each line and appends it to a list 
+                for i in range(w/2): 
+                    pixel = bin_file.read(3)
+                    row.append(pixel)
+                    mirror.write(pixel)
+                #Writes down the list from above but in reverse
+                for i in range(w/2):
+                    pixel = bin_file.read(3)
+                    mirror.write(row[(w/2-1)-i])
+                #Resets the row variable for the next line
+                row = []
                 
+        if choice == "horizontal":
+            #Reads half of the files lines  
+            for i in range(h/2+1):
+                pixel = bin_file.read(w*3)
+                row.append(pixel)
+                mirror.write(pixel)
+            #Writes the lines in reverse at the half way mark
+            for i in range(h/2):
+                mirror.write(row[(h/2-1)-i])
+            
+        print "Finished"
+        
+"""             
+Description: Creates a static effect on an image. 
+Parameter:
+    bin_file - the binary file containing the image
+Return: Nothing
+Plan: Will go through each pixel in the binary file and alter the rgb lvls to
+make the effect lighter or normal in brightness. Once the rgb lvls are set, they
+will be inputed into a list where it will be randomly chosen to be written down
+in the static file. 
+"""
+def static(bin_file):
+    w, h, offset = set_up_size(bin_file)
+    #Level of brightness for the effect
+    static_lvl = raw_input("Would you want a lighter or normal static effect? ")
+    with set_up_output(bin_file) as static:
+        for i in range(w*h):
+            #Pixels and bytes to alter
+            pixel = bin_file.read(3)
+            b1 = ord(pixel[0])
+            b2 = ord(pixel[1]) 
+            b3 = ord(pixel[2])
+
+            #Increases the brightness of the effect
+            if static_lvl == "lighter":
+                if 100 < b1 < 200:
+                    b1 += 50
+                if 100 < b2 < 200:
+                    b2 += 50
+                if 100 < b3 < 200:
+                    b3 += 50 
+                    
+            bytes = [b1,b2,b3]
+            #Chooses a rgb level randomly from bytes to write them as a pixel
+            static.write(chr(random.choice(bytes)) +\
+                        chr(random.choice(bytes))+ chr(random.choice(bytes)))
+    print "Finished"
+    
 if __name__ == "__main__":
     main()
