@@ -1,6 +1,6 @@
 """
 Francisco Lopez 
-4/22/19
+4/28/19
 Sem II Final Project 
 I will modify different bmp images and give them certain image effects. They
 will either get a regular or reverse outline effect, a vertical or horizontal
@@ -11,6 +11,7 @@ Francisco Lopez
 """
 import os
 import random
+import time
 
 """
 Description: Calls the methods that are typed by the user.
@@ -19,18 +20,40 @@ Return: Nothing
 Plan: Variable will ask user for the certain effect they want to see. 
 """
 def main():
+    #Check the file stuff and make the file names shorter to easily go
+    #with the path
     bin_file = bin_file_setup()
+    choose_effect(bin_file)
+    
+"""
+Description: Tells the user the effects and asks them which one they would like.
+Parameter:
+    bin_file - binary file used for the effects methods
+Return: Nothing
+Plan: Asks the user for a certain number that is for a specific effect. The num
+they choose will be run the method that is for the certain effect. 
+"""
+def choose_effect(bin_file):
+    #Explains what effects the user can see and asks for a specific effect
+    print 
     print "The effects you can choose are outline, mirror or static."
-    effect = raw_input("Which effect would you like to do? ")
-    if effect == "outline":
+    print 
+    print "Every image works with outline, mirror works best with tesla"
+    print "and static works best with lion and flower"
+    print "Input 1 for outline, 2 for mirror or 3 for static"
+    print
+    effect = input("Which effect would you like to create? ")
+    
+    if effect == 1:
         outline(bin_file)
-    elif effect == "mirror":
+    elif effect == 2:
         mirror(bin_file)
-    elif effect == "static":
+    elif effect == 3:
         static(bin_file)
-    else:
-        effect = raw_input("Which effect would you like? ")
 
+    new_effect = raw_input("Another effect? Yes(y) or No(n). ")
+    if new_effect
+        
 """
 Description: Gets the users file and checks if it is a file in the folder. 
 Parameter: None
@@ -40,19 +63,17 @@ Plan: Asks the user for a file and uses os.path.exists to check if the file is
 in the folder with the code.
 """   
 def bin_file_setup():
-    #Picks the appropriate file for the certain image the user wants
-    image = raw_input("Do you want to use a lion, flower or class pic? ")
-    if image == "flower":
-        file_name = "testforoutline.bmp"
-    if image == "lion":
-        file_name = "lion.bmp"
-    if image == "class pic":
-        file_name = "class_pic.bmp"
+    print "f is for flower, l is for lion, t for tesla."
     
-    #Checks if the file is in the folder
-    while os.path.exists(file_name) == False:
-        print "This file does not exist. Input another one"
-        file_name = raw_input("What binary file do you want to run? ")
+    #Picks the appropriate file for the certain image the user wants
+    img = raw_input("Do you want to modify a pic of a lion, flower or tesla? ")
+    
+    if img == "f": 
+        file_name = "flower.bmp"
+    if img == "l":
+        file_name = "lion.bmp"
+    if img == "t":
+        file_name = "tesla.bmp"
     bin_file = open(file_name, "r+b")
     return bin_file
 
@@ -110,7 +131,7 @@ header is copied to that output file.
 def set_up_output(bin_file):
     #Asks for the output name and opens it
     #output_name = raw_input("What is the output file? ")
-    output_name = "outline.bmp"
+    output_name = "output.bmp"
     output = open(output_name, "w+b")
     copy_header(bin_file, output)
     return output
@@ -144,11 +165,13 @@ figures into outlines of themselves.
 """
 def outline(bin_file):
     w, h, offset = set_up_size(bin_file)
-    outline_type = raw_input("Do you want a reverse or regular outline? ")
+    print "Input 1 or 2"
+    outline_type = input("Do you want a regular(1) or reverse(2) outline? ")
+
     with set_up_output(bin_file) as outline:
         for i in range(w*h):
             ch = bin_file.read(3)
-            if outline_type == "regular":
+            if outline_type == 1:
                 #Looks at the rgb levels to see whether they should become a
                 #black or a white color
                 if ord(ch[0]) < 140 and ord(ch[1]) < 130 and ord(ch[2]) < 120:
@@ -156,13 +179,16 @@ def outline(bin_file):
                 else:
                     outline.write(chr(255) + chr(255) + chr(255))
                     
-            if outline_type == "reverse":
+            if outline_type == 2:
                 #Looks at the rgb levels but changes the rgb levels to the
                 #opposite of the regular outline
                 if ord(ch[0]) < 140 and ord(ch[1]) < 130 and ord(ch[2]) < 120:
                     outline.write(chr(255) + chr(255) + chr(255))
                 else:
                     outline.write(chr(0) + chr(0) + chr(0))
+                    
+        os.system("powershell -c H:\CS2\Github\Sem2FP\output.bmp")
+        
     print "Finished"
 
 """
@@ -177,13 +203,14 @@ reverse. Creating the mirror effect for one line and th eloop will continue to
 go until it reaches the last line. 
 """
 def mirror(bin_file):
-    #Set varialbes for 
+    #Set varialbes for the mirror file
     w, h, offset = set_up_size(bin_file)
     row = []
-    choice = raw_input("Would you want a horiontal or vertical mirror effect? ")
-    
+    print "Input 1 or 2"
+    choice = input("Do you want a horiontal(1) or vertical(2) effect? ")
+        
     with set_up_output(bin_file) as mirror:
-        if choice == "vertical":
+        if choice == 2:
             for i in range(h):
                 #Reads the first half of each line and appends it to a list 
                 for i in range(w/2): 
@@ -197,7 +224,7 @@ def mirror(bin_file):
                 #Resets the row variable for the next line
                 row = []
                 
-        if choice == "horizontal":
+        if choice == 1:
             #Reads half of the files lines  
             for i in range(h/2+1):
                 pixel = bin_file.read(w*3)
@@ -206,7 +233,7 @@ def mirror(bin_file):
             #Writes the lines in reverse at the half way mark
             for i in range(h/2):
                 mirror.write(row[(h/2-1)-i])
-            
+        os.system("powershell -c H:\CS2\Github\Sem2FP\output.bmp")
         print "Finished"
         
 """             
@@ -222,7 +249,10 @@ in the static file.
 def static(bin_file):
     w, h, offset = set_up_size(bin_file)
     #Level of brightness for the effect
-    static_lvl = raw_input("Would you want a lighter or normal static effect? ")
+    print "The static effect can have its normal brightness or a lighter effect"
+    print "Input 1 or 2"
+    static_lvl = input("Would you want a normal(1) or bright(2) effect? ")
+        
     with set_up_output(bin_file) as static:
         for i in range(w*h):
             #Pixels and bytes to alter
@@ -232,18 +262,19 @@ def static(bin_file):
             b3 = ord(pixel[2])
 
             #Increases the brightness of the effect
-            if static_lvl == "lighter":
+            if static_lvl == 2:
                 if 100 < b1 < 200:
                     b1 += 50
                 if 100 < b2 < 200:
                     b2 += 50
                 if 100 < b3 < 200:
                     b3 += 50 
-                    
+    
             bytes = [b1,b2,b3]
             #Chooses a rgb level randomly from bytes to write them as a pixel
             static.write(chr(random.choice(bytes)) +\
                         chr(random.choice(bytes))+ chr(random.choice(bytes)))
+        os.system("powershell -c H:\CS2\Github\Sem2FP\output.bmp")
     print "Finished"
     
 if __name__ == "__main__":
