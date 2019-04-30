@@ -60,7 +60,7 @@ def choose_effect(bin_file):
     #Asks the user if they want to continue or not
     if new_effect == "n":
         print 
-        print "If you want to use another image, press X and F5 on the code"
+        print "If you want to use another image, press X then F5 on the code"
         
 """
 Description: Gets the users file and checks if it is a file in the folder. 
@@ -199,8 +199,9 @@ def outline(bin_file):
         os.system("powershell -c H:\CS2\Github\Sem2FP\output.bmp")
         outline.close()
         
-    print "Finished modification!"
-
+        print "Finished modification!"
+        print
+        
 """
 Description: Mirrors an image vertically. 
 Parameter:
@@ -247,6 +248,7 @@ def mirror(bin_file):
         mirror.close()
         
         print "Finished modification!"
+        print
         
 """             
 Description: Creates a static effect on an image. 
@@ -286,11 +288,10 @@ def static(bin_file):
             #Chooses a rgb level randomly from bytes to write them as a pixel
             static.write(chr(random.choice(bytes)) +\
                         chr(random.choice(bytes))+ chr(random.choice(bytes)))
-        static.close()
         
         os.system("powershell -c H:\CS2\Github\Sem2FP\output.bmp")
-    print "Finished modification!"
+        print "Finished modification!"
+        print
     
 if __name__ == "__main__":
     main()
- 
